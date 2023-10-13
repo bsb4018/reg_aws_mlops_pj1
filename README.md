@@ -38,11 +38,11 @@ python3 -m pip install -U pip boto3 numpy pandas wget awscli --user
 ```
 
 ```
-wget https://raw.githubusercontent.com/manifoldailearning/mlops-with-aws-datascientists/main/Section-16-mlops-pipeline/mlops-tutorial.zip
+wget https://github.com/bsb4018/reg_aws_mlops_pj1/archive/refs/heads/main.zip
 ```
 
 ```
-unzip mlops-tutorial.zip
+unzip -o main.zip
 ```
 
 ```
@@ -50,6 +50,7 @@ cd utils
 ls
 sudo chmod +x c9_resize.sh
 ./c9_resize.sh
+press q
 ```
 
 # 1. Preperation:
@@ -60,7 +61,7 @@ aws s3 mb "s3://${DATA_BUCKET}" --region $AWS_DEFAULT_REGION
 
 aws s3api put-bucket-versioning --bucket "${DATA_BUCKET}" --versioning-configuration Status=Enabled --region $AWS_DEFAULT_REGION
 
-wget https://raw.githubusercontent.com/manifoldailearning/mlops-with-aws-datascientists/main/Section-16-mlops-pipeline/dataset/abalone.csv
+wget https://github.com/bsb4018/reg_aws_mlops_pj1/blob/main/dataset/abalone.csv
 
 ```
 
@@ -242,6 +243,10 @@ aws cloudformation package --template-file mlops-pipeline.yml \
 
 ```
 aws s3 cp ~/environment/abalone.csv "s3://${DATA_BUCKET}/input/raw/abalone.csv" --region $AWS_DEFAULT_REGION
+```
+OR
+```
+aws s3 cp ~/environment/dataset/abalone.csv "s3://${DATA_BUCKET}/input/raw/abalone.csv" --region $AWS_DEFAULT_REGION
 ```
 
 ```
