@@ -51,6 +51,7 @@ ls
 sudo chmod +x c9_resize.sh
 ./c9_resize.sh
 press q
+cd ..
 ```
 
 # 1. Preperation:

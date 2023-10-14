@@ -8,16 +8,22 @@ from awsglue.utils import getResolvedOptions
 from io import StringIO
 
 # Helper function to split dataset (80/19/1)
-def split_data(df, train_percent=0.8, validate_percent=0.19, seed=None):
-    np.random.seed()
-    perm = np.random.permutation(df.index)
-    m = len(df.index)
-    train_end = int(train_percent * m)
-    validate_end = int(validate_percent * m) + train_end
-    train = df.iloc[perm[:train_end]]
-    validate = df.iloc[perm[train_end:validate_end]]
-    test = df.iloc[perm[validate_end:]]
-    return [('train', train), ('test', test), ('validate', validate), ('baseline', train)]
+def split_data(df, train_ratio=0.8, test_ratio=0.1, validation_ratio=0.1):
+    # Shuffle the DataFrame
+    df = df.sample(frac=1, random_state=42)
+
+    # Calculate the split sizes
+    total_samples = len(df)
+    train_size = int(train_ratio * total_samples)
+    test_size = int(test_ratio * total_samples)
+    validation_size = total_samples - train_size - test_size
+
+    # Split the DataFrame into train, test, and validation
+    train_data = df[:train_size]
+    test_data = df[train_size:train_size + test_size]
+    validation_data = df[train_size + test_size:]
+    
+    return [('train', train_data), ('test', test_data), ('validate', validation_data), ('baseline', train_data)]
 
 # Get job args
 args = getResolvedOptions(sys.argv, ['S3_INPUT_BUCKET', 'S3_INPUT_KEY_PREFIX', 'S3_OUTPUT_BUCKET', 'S3_OUTPUT_KEY_PREFIX'])
@@ -41,6 +47,8 @@ data = data[["rings", "sex", "length", "diameter", "height", "whole weight",
 # Create dummy variables for categorical `sex` feature using pandas
 print("Encoding Features ...\n")
 data = pd.get_dummies(data)
+columns_to_replace = ['sex_F','sex_I','sex_M']
+data[columns_to_replace] = data[columns_to_replace].replace({True: 1, False: 0})
 
 # Create train, test and validate datasets
 print("Creating dataset splits ...\n")
