@@ -255,8 +255,6 @@ aws cloudformation create-stack --stack-name abalone-pipeline \
 --template-body file://~/environment/pipeline/mlops-pipeline-output.yml \
 --parameters $(printf "$parameters" "abalone" "latest" "abalone" "MLOps") \
 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
-
-
 ```
 
 

@@ -47,8 +47,6 @@ data = data[["rings", "sex", "length", "diameter", "height", "whole weight",
 # Create dummy variables for categorical `sex` feature using pandas
 print("Encoding Features ...\n")
 data = pd.get_dummies(data)
-columns_to_replace = ['sex_F','sex_I','sex_M']
-data[columns_to_replace] = data[columns_to_replace].replace({True: 1, False: 0})
 
 # Create train, test and validate datasets
 print("Creating dataset splits ...\n")
