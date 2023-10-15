@@ -56,20 +56,23 @@ datasets = split_data(data)
 for file_name, partition_name in datasets:
     if file_name == 'test':
         print("Writing {} data ...\n".format(file_name))
-        np.savetxt(file_name+'.csv', partition_name, delimiter=',')
+        partition_name.to_csv(file_name+'.csv',sep=',')
+        #np.savetxt(file_name+'.csv', partition_name, delimiter=',')
         boto3.Session().resource('s3').Bucket(args['S3_OUTPUT_BUCKET']).Object(os.path.join(args['S3_OUTPUT_KEY_PREFIX'], 'testing', file_name+'.csv')).upload_file(file_name+'.csv')
     elif file_name == 'baseline':
         print("Writing {} data ...\n".format(file_name))
-        np.savetxt(
-            file_name+'.csv',
-            partition_name,
-            delimiter=',',
-            header="rings,length,diameter,height,whole weight,shucked weight,viscera weight,shell weight,sex_F,sex_I,sex_M"
-        )
+        partition_name.to_csv(file_name+'.csv',sep=',')
+        #np.savetxt(
+            #file_name+'.csv',
+            #partition_name,
+            #delimiter=',',
+            #header="rings,length,diameter,height,whole weight,shucked weight,viscera weight,shell weight,sex_F,sex_I,sex_M"
+        #)
         boto3.Session().resource('s3').Bucket(args['S3_OUTPUT_BUCKET']).Object(os.path.join(args['S3_OUTPUT_KEY_PREFIX'], 'baseline', file_name+'.csv')).upload_file(file_name+'.csv')
     else:
         print("Writing {} data ...\n".format(file_name))
-        np.savetxt(file_name+'.csv', partition_name, delimiter=',')
+        partition_name.to_csv(file_name+'.csv',sep=',')
+        #np.savetxt(file_name+'.csv', partition_name, delimiter=',')
         boto3.Session().resource('s3').Bucket(args['S3_OUTPUT_BUCKET']).Object(os.path.join(args['S3_OUTPUT_KEY_PREFIX'], 'training', file_name+'.csv')).upload_file(file_name+'.csv')
 
 print("Done writing to S3 ...\n")
