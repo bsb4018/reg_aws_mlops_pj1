@@ -7,7 +7,7 @@ import time
 import botocore
 import numpy as np
 import pandas as pd
-from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import mean_squared_error
 from botocore.exceptions import ClientError
 
@@ -37,9 +37,16 @@ def evaluate_model(bucket, key, endpoint_name):
     y_test = []
     obj = s3.get_object(Bucket=bucket, Key=key)
     test_df = pd.read_csv(io.BytesIO(obj['Body'].read()), names=column_names)
+
+    for col in column_names:
+            test_df[col] = pd.to_numeric(test_df[col], errors='coerce')
+
     y = test_df['rings'].to_numpy()
-    X = test_df.drop(['rings'], axis=1).to_numpy()
-    X = preprocessing.normalize(X)
+    X = test_df.drop(['rings'], axis=1)
+    # Normalize the data
+    scaler = StandardScaler()
+    X = scaler.fit_transform(X)
+ 
     
     # Cycle through each row of the data to get a prediction
     for row in range(len(X)):
