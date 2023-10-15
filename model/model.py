@@ -11,7 +11,7 @@ from tensorflow import keras
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.optimizers import Adam
-from sklearn import preprocessing
+from sklearn.preprocessing import StandardScaler
 
 tf.get_logger().setLevel('ERROR')
 
@@ -68,15 +68,22 @@ def train():
         # Load the validation dataset
         val_data = pd.read_csv(os.path.join(training_path, 'validate.csv'), sep=',', names=column_names)
 
+        train_data.dropna()
+        val_data.dropna()
+
         # Split the data for training features vs. predictor
-        train_y = train_data['rings'].to_numpy()
-        train_X = train_data.drop(['rings'], axis=1).to_numpy()
-        val_y = val_data['rings'].to_numpy()
-        val_X = val_data.drop(['rings'], axis=1).to_numpy()
+        train_y = train_data['rings']
+        train_X = train_data.drop(['rings'], axis=1)
+        val_y = val_data['rings']
+        val_X = val_data.drop(['rings'], axis=1)
 
         # Normalize the data
-        train_X = preprocessing.normalize(train_X)
-        val_X = preprocessing.normalize(val_X)
+        scaler = StandardScaler()
+        train_X = scaler.fit_transform(train_X)
+        val_X = scaler.fit_transform(val_X)
+
+        train_y = train_y.to_numpy()
+        val_y = val_y.to_numpy()
         
         # Prevent overtraining to minimize model overfitting the data
         early_stop = keras.callbacks.EarlyStopping(monitor='val_loss', patience=10)
