@@ -48,6 +48,8 @@ data = data[["rings", "sex", "length", "diameter", "height", "whole weight",
 print("Encoding Features ...\n")
 data = pd.get_dummies(data)
 
+data = data.astype(float)
+
 # Create train, test and validate datasets
 print("Creating dataset splits ...\n")
 datasets = split_data(data)
