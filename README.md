@@ -59,7 +59,6 @@ cd ..
 
 ```
 aws s3 mb "s3://${DATA_BUCKET}" --region $AWS_DEFAULT_REGION
-
 aws s3api put-bucket-versioning --bucket "${DATA_BUCKET}" --versioning-configuration Status=Enabled --region $AWS_DEFAULT_REGION
 
 wget https://github.com/bsb4018/reg_aws_mlops_pj1/blob/main/dataset/abalone.csv
@@ -256,7 +255,6 @@ aws cloudformation create-stack --stack-name abalone-pipeline \
 --parameters $(printf "$parameters" "abalone" "latest" "abalone" "MLOps") \
 --capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND
 ```
-
 
 
 # 4. Review the Pipelines and Various Stages
