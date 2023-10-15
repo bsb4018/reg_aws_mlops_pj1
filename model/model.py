@@ -71,6 +71,11 @@ def train():
         train_data.dropna()
         val_data.dropna()
 
+        for col in column_names:
+            train_data[col] = pd.to_numeric(train_data[col], errors='coerce')
+            val_data[col] = pd.to_numeric(val_data[col], errors='coerce')
+        
+
         print(train_data.shape)
         print(val_data.shape)
 
