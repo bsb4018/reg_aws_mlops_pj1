@@ -71,6 +71,9 @@ def train():
         train_data.dropna()
         val_data.dropna()
 
+        print(train_data.shape)
+        print(val_data.shape)
+
         # Split the data for training features vs. predictor
         train_y = train_data['rings']
         train_X = train_data.drop(['rings'], axis=1)
