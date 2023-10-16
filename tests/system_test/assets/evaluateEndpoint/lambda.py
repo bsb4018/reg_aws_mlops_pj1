@@ -1,6 +1,7 @@
 import os
 import io
 import json
+import re
 import logging
 import boto3
 import time
@@ -46,11 +47,12 @@ def evaluate_model(bucket, key, endpoint_name):
     # Normalize the data
     scaler = StandardScaler()
     X = scaler.fit_transform(X)
- 
+    
+    arr_test = X
     
     # Cycle through each row of the data to get a prediction
-    for row in range(len(X)):
-        payload = ",".join(map(str, X[row]))
+    for row in range(len(arr_test)):
+        payload = ",".join(map(str, arr_test[row]))
         elapsed_time = time.time()
         try:
             response = sm_client.invoke_endpoint(
@@ -62,10 +64,19 @@ def evaluate_model(bucket, key, endpoint_name):
             error_message = e.response["Error"]["Message"]
             logger.error(error_message)
             raise Exception(error_message)
+        
         response_times.append(time.time() - elapsed_time)
-        result = np.asarray(response['Body'].read().decode('utf-8').rstrip('\n'))
-        predictions.append(float(result))
-        y_test.append(float(y[row]))
+        result = response['Body'].read()
+        pattern = r'[^0-9.]+'
+        result = re.split(pattern,result.decode("utf-8"))
+        predictions += [float(r) for r in result if r != ""]
+        y_test += [float(y[row])]
+
+        #print(result)
+        #print(y[row])
+
+        #print(type(result))
+        #print(type([row]))
     
     return y_test, predictions, response_times
 
@@ -97,6 +108,10 @@ def handler(event, context):
     # Get the evaluation results from SageMaker hosted model
     logger.info("Evaluating SageMaker Hosted Model ...")
     y, y_pred, times = evaluate_model(bucket, key, endpoint_name)
+
+    print(y)
+    print(y_pred)
+    print(times)
     
     # Calculate the metrics
     mse = mean_squared_error(y, y_pred)
